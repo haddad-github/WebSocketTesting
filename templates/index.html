@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rock Paper Scissors</title>
+    <style>
+        /* Dark mode styles */
+        body {
+            background-color: #121212;
+            color: #f0f0f0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+
+        /* Styling the buttons */
+        .game-button {
+            padding: 20px 40px;
+            margin: 15px;
+            font-size: 1.5em;
+            border: none;
+            border-radius: 8px;
+            background-color: #333;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .game-button:hover {
+            background-color: #555;
+        }
+
+        .game-button:active {
+            background-color: #777;
+        }
+
+        /* Image display styling */
+        #image-container img {
+            width: 150px;
+            height: 150px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Rock Paper Scissors</h1>
+
+    <div>
+        <button class="game-button" id="rock">Rock</button>
+        <button class="game-button" id="paper">Paper</button>
+        <button class="game-button" id="scissors">Scissors</button>
+    </div>
+
+    <div id="status">No one has clicked any button yet.</div>
+
+    <div id="image-container">
+        <img id="item-image" src="" alt="Selected item" style="display:none;">
+    </div>
+
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+    <script>
+        const socket = io();
+
+        // Elements
+        const statusDiv = document.getElementById('status');
+        const imageContainer = document.getElementById('image-container');
+        const itemImage = document.getElementById('item-image');
+
+        // Button elements
+        const rockButton = document.getElementById('rock');
+        const paperButton = document.getElementById('paper');
+        const scissorsButton = document.getElementById('scissors');
+
+        // Listen for button click events and send to server
+        rockButton.addEventListener('click', () => {
+            socket.emit('button_clicked', 'rock');
+        });
+
+        paperButton.addEventListener('click', () => {
+            socket.emit('button_clicked', 'paper');
+        });
+
+        scissorsButton.addEventListener('click', () => {
+            socket.emit('button_clicked', 'scissors');
+        });
+
+        // When a button click is received from the server
+        socket.on('button_clicked', (item) => {
+            statusDiv.innerText = `Someone clicked: ${item}`;
+
+            // Show corresponding image based on the item clicked
+            let imageUrl = '';
+            if (item === 'rock') {
+                imageUrl = '../static/rock.png';
+            } else if (item === 'paper') {
+                imageUrl = '../static/paper.png';
+            } else if (item === 'scissors') {
+                imageUrl = '../static/scissors.png';
+            }
+
+            // Display the image
+            itemImage.src = imageUrl;
+            itemImage.style.display = 'block';
+        });
+    </script>
+</body>
+</html>
