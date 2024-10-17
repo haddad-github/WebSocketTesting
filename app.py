@@ -14,5 +14,6 @@ def handle_button_click(item):
     socketio.emit('button_clicked', item)
 
 if __name__ == '__main__':
-    socketio.run(app)
+    socketio.run(app, host="0.0.0.0", port=5000, debug=True)
+
 
